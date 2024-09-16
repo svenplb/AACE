@@ -2,10 +2,11 @@
 - [x] Chessboard representation
 - [] FAN
 - [x] random moves
-- [] move generation
-- [] board evaluation
-- [] minimax
-- [] alpha-beta pruning
+- [ ] pieces wert geben, Dame = 9, Turm = 5, Läufer = 3, Pferd = 3, Bauer = 1
+- [] move generation 
+- [] board evaluation, 
+- [] minimax search tree
+- [] alpha-beta pruning (optional)(optmisierung)
 
 
 
