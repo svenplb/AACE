@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/notnil/chess"
 )
@@ -14,25 +15,23 @@ func main() {
 	fmt.Println(game.Position().Board().Draw())
 	fmt.Println(moves)
 
-	if err := game.MoveStr("e4"); err != nil {
-		// handle error
-		fmt.Println("es funktioniert garnichts bro, was machst du")
+	for game.Outcome() == chess.NoOutcome {
+		moves := game.ValidMoves()
+		if len(moves) == 0 {
+			break
+		}
+
+		randomMove := moves[rand.Intn(len(moves))]
+
+		err := game.Move(randomMove)
+		if err != nil {
+			fmt.Println("Error making move:", err)
+			break
+
+		}
+		fmt.Printf("Move made: %s\n", randomMove.String())
+		fmt.Println(game.Position().Board().Draw())
+		fmt.Println(game.String())
 	}
-
-	fmt.Println(game.String())
-	fmt.Println(game.Position().Board().Draw())
-	fmt.Println(moves)
-
-	if err := game.MoveStr("e5"); err != nil {
-		// handle error
-		fmt.Println("es funktioniert garnichts bro, was machst du")
-	}
-
-	// history
-	fmt.Println(game.String())
-	// draw board
-	fmt.Println(game.Position().Board().Draw())
-	// valid moves
-	fmt.Println(moves)
 
 }

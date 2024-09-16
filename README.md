@@ -1,8 +1,18 @@
 # YARBCS
-- [] Chessboard representation
+- [x] Chessboard representation
 - [] FAN
-- [] random moves
-- [] library: https://github.com/notnil/chess
+- [x] random moves
+- [] move generation
+- [] board evaluation
+- [] minimax
+- [] alpha-beta pruning
+
+
+
+
+
+Notes
+- library: https://github.com/notnil/chess
 
 
 
