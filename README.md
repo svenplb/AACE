@@ -5,7 +5,8 @@
 ## Todo List
 - [x] Chessboard representation
 - [x] random moves
-- [ ] pieces wert geben, Dame = 9, Turm = 5, Läufer = 3, Pferd = 3, Bauer = 1
-- [ ] board evaluation
-- [ ] move generation mit minimax search tree
-- [ ] alpha-beta pruning (optional)(optmisierung)
+- [x] valuable pieces
+- [x] board evaluation
+- [x] build first working search tree
+- [ ] move generation with minimax search tree
+- [ ] alpha-beta pruning (optional)(optimizing)
