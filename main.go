@@ -67,6 +67,8 @@ func main() {
 			fmt.Println(score)
 		}
 		fmt.Println(game.Position().Board().Draw())
+		fmt.Println(moves)
+
 	}
 
 }
