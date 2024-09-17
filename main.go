@@ -33,47 +33,71 @@ func evaluateBoardPosition(position *chess.Position) int {
 	return score
 }
 
-// func searchTree(position *chess.Position, depth int, alpha int, beta int) int {}
-func searchTree(position *chess.Position, depth int) (int, *chess.Move) {
-	// depth = how deep the alg / tree goes
-	// alpha = best score for maximizing
-	// beta = best score for  minimizing
-	moves := position.ValidMoves()
-
-	// return current state if depth == 0
+// search algorithm, return best evaluation and move
+func searchTree(position *chess.Position, depth int, alpha, beta int, maximizingPlayer bool) (int, *chess.Move) {
 	if depth == 0 {
 		return evaluateBoardPosition(position), nil
 	}
 
-	bestEvaluation := -9999
+	moves := position.ValidMoves()
 	var bestMove *chess.Move
-	for _, move := range moves {
-		newPosition := position.Update(move)
-		evaluation, _ := searchTree(newPosition, depth-1)
-		if evaluation > bestEvaluation {
-			bestEvaluation = evaluation
-			bestMove = move
+
+	if maximizingPlayer {
+		maxEval := -9999
+		for _, move := range moves {
+			newPosition := position.Update(move)
+			eval, _ := searchTree(newPosition, depth-1, alpha, beta, false)
+			if eval > maxEval {
+				maxEval = eval
+				bestMove = move
+			}
+			alpha = max(alpha, eval)
+			if beta <= alpha {
+				break
+			}
 		}
-
+		return maxEval, bestMove
+	} else {
+		minEval := 9999
+		for _, move := range moves {
+			newPosition := position.Update(move)
+			eval, _ := searchTree(newPosition, depth-1, alpha, beta, true)
+			if eval < minEval {
+				minEval = eval
+				bestMove = move
+			}
+			beta = min(beta, eval)
+			if beta <= alpha {
+				break
+			}
+		}
+		return minEval, bestMove
 	}
-	return bestEvaluation, bestMove
-
 }
 
-func main() {
-	game := chess.NewGame()
-	// print outcome and game PGN
-	moves := game.ValidMoves()
+// Helper functions
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
 
-	fmt.Println(game.Position().Board().Draw())
-	fmt.Println(moves)
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func playFullGame(game *chess.Game) {
 
 	for game.Outcome() == chess.NoOutcome {
 		moves := game.ValidMoves()
 		if len(moves) == 0 {
 			break
 		}
-		bestEvaluation, bestMove := searchTree(game.Position(), 3)
+		bestEvaluation, bestMove := searchTree(game.Position(), 6, -9999, 9999, true)
 		fmt.Println("Best Move: " + bestMove.String())
 		fmt.Println("Best Evaluation: ", bestEvaluation)
 		err := game.Move(bestMove)
@@ -83,22 +107,16 @@ func main() {
 			break
 		}
 
-		score := evaluateBoardPosition(game.Position())
-		if score > 0 {
-			fmt.Println("White is winning")
-			fmt.Println(score)
-		} else if score < 0 {
-			fmt.Println("Black is winning")
-			fmt.Println(score)
-		} else {
-			fmt.Println("The game is drawn")
-			fmt.Println(score)
-		}
-
-		fmt.Println("Game outcome:", game.Outcome())
 		fmt.Println(game.Position().Board().Draw())
-		fmt.Println(moves)
 
 	}
+
+}
+
+func main() {
+	fenStr := "rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11"
+	fen, _ := chess.FEN(fenStr)
+	game := chess.NewGame(fen)
+	playFullGame(game)
 
 }
