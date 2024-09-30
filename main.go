@@ -33,73 +33,43 @@ func evaluateBoardPosition(position *chess.Position) int {
 	return score
 }
 
-// search algorithm, return best evaluation and move
-func searchTree(position *chess.Position, depth int, alpha, beta int, maximizingPlayer bool) (int, *chess.Move) {
+// func searchTree(position *chess.Position, depth int, alpha int, beta int) int {}
+func searchTree(position *chess.Position, depth int) (int, *chess.Move) {
+	// depth = how deep the alg / tree goes
+	// alpha = best score for maximizing
+	// beta = best score for  minimizing
+	moves := position.ValidMoves()
+
+	// return current state if depth == 0
 	if depth == 0 {
 		return evaluateBoardPosition(position), nil
 	}
 
-	moves := position.ValidMoves()
+	bestEvaluation := -9999
 	var bestMove *chess.Move
-
-	if maximizingPlayer {
-		maxEval := -9999
-		for _, move := range moves {
-			newPosition := position.Update(move)
-			eval, _ := searchTree(newPosition, depth-1, alpha, beta, false)
-			if eval > maxEval {
-				maxEval = eval
-				bestMove = move
-			}
-			alpha = max(alpha, eval)
-			if beta <= alpha {
-				break
-			}
+	for _, move := range moves {
+		newPosition := position.Update(move)
+		evaluation, _ := searchTree(newPosition, depth-1)
+		if evaluation > bestEvaluation {
+			bestEvaluation = evaluation
+			bestMove = move
 		}
-		return maxEval, bestMove
-	} else {
-		minEval := 9999
-		for _, move := range moves {
-			newPosition := position.Update(move)
-			eval, _ := searchTree(newPosition, depth-1, alpha, beta, true)
-			if eval < minEval {
-				minEval = eval
-				bestMove = move
-			}
-			beta = min(beta, eval)
-			if beta <= alpha {
-				break
-			}
-		}
-		return minEval, bestMove
+
 	}
+	return bestEvaluation, bestMove
+
 }
 
-// Helper functions
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func playFullGame(game *chess.Game) {
+func engineAgainstEngine(game *chess.Game) {
 
 	for game.Outcome() == chess.NoOutcome {
 		moves := game.ValidMoves()
 		if len(moves) == 0 {
 			break
 		}
-		bestEvaluation, bestMove := searchTree(game.Position(), 6, -9999, 9999, true)
-		fmt.Println("Best Move: " + bestMove.String())
-		fmt.Println("Best Evaluation: ", bestEvaluation)
+		bestEvaluation, bestMove := searchTree(game.Position(), 3)
+
+		fmt.Println("Best Move:", bestMove, "Eval of Move:", bestEvaluation)
 		err := game.Move(bestMove)
 
 		if err != nil {
@@ -110,13 +80,54 @@ func playFullGame(game *chess.Game) {
 		fmt.Println(game.Position().Board().Draw())
 
 	}
+}
+
+func singlePositionSearchTest(game *chess.Game, depth int64) {
+
+	bestEval, bestMove := searchTree(game.Position(), int(depth))
+	fmt.Println("Eval", bestEval, "Best Move", bestMove)
+	fmt.Println(game.Position().Board().Draw())
+	fmt.Println(game.String())
+}
+
+func humanAgainstEngine(game *chess.Game, depth int) {
+	fmt.Println(game.Position().Board().Draw())
+
+	for game.Outcome() == chess.NoOutcome {
+
+		var move string
+
+		if game.Position().Turn() == chess.White {
+
+			fmt.Println("enter move:")
+			fmt.Scan(&move)
+
+			if err := game.MoveStr(move); err != nil {
+				fmt.Println("INVALID MOVE:", move)
+				fmt.Println("Error:", err)
+			}
+		} else {
+			fmt.Println("Anti Adrian Chessbot is searching...")
+			bestEvaluation, bestMove := searchTree(game.Position(), depth)
+			fmt.Println("Best Eval:", bestEvaluation, "Best Move found:", bestMove)
+
+			err := game.Move(bestMove)
+
+			if err != nil {
+				fmt.Println("Error making move:", err)
+				break
+			}
+
+		}
+
+		fmt.Println(game.Position().Board().Draw())
+	}
 
 }
 
 func main() {
-	fenStr := "rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR w Gkq - 4 11"
-	fen, _ := chess.FEN(fenStr)
-	game := chess.NewGame(fen)
-	playFullGame(game)
+	game := chess.NewGame()
+	fmt.Println(game.Position().Turn())
+	humanAgainstEngine(game, 4)
 
 }
