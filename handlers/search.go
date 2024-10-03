@@ -46,6 +46,54 @@ func minimax(position *chess.Position, depth int) (int, *chess.Move) {
 	return bestEval, bestMove
 }
 
+func alphaBetaSearch(position *chess.Position, depth int, alpha int, beta int) (int, *chess.Move) {
+	if depth == 0 || position.Status() != chess.NoMethod {
+		return evaluateBoardPosition(position), nil
+	}
+	moves := position.ValidMoves()
+	if len(moves) == 0 {
+		return evaluateBoardPosition(position), nil
+	}
+	var bestMove *chess.Move
+
+	if position.Turn() == chess.White {
+		bestEval := -9999
+		for _, move := range moves {
+			newPosition := position.Update(move)
+			eval, _ := alphaBetaSearch(newPosition, depth-1, alpha, beta)
+			if eval > bestEval {
+				bestEval = eval
+				bestMove = move
+			}
+			if eval > alpha {
+				alpha = eval
+			}
+			if beta <= alpha {
+				break // Beta
+			}
+		}
+		return bestEval, bestMove
+	} else {
+		bestEval := 9999
+		for _, move := range moves {
+			newPosition := position.Update(move)
+			eval, _ := alphaBetaSearch(newPosition, depth-1, alpha, beta)
+			if eval < bestEval {
+				bestEval = eval
+				bestMove = move
+			}
+			if eval < beta {
+				beta = eval
+			}
+
+			if beta <= alpha {
+				break // Alpha
+			}
+		}
+		return bestEval, bestMove
+	}
+}
+
 func Search(c *gin.Context) {
 
 	var json struct {
@@ -65,7 +113,7 @@ func Search(c *gin.Context) {
 
 	game := chess.NewGame(fen)
 
-	_, bestMove := minimax(game.Position(), 3)
+	_, bestMove := alphaBetaSearch(game.Position(), 3, -9999, 9999)
 
 	fmt.Println(bestMove)
 	eval := Evaluate(game)
