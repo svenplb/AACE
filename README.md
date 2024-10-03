@@ -1,6 +1,7 @@
 <p align="center"><img src="https://images.emojiterra.com/google/noto-emoji/unicode-15.1/color/1024px/1f9cc.png" height="64" alt="Project Logo"></p>
 <h3 align="center">AACE</h3>
 <p align="center">Anti Adrian Chess Engine, written in Go. Goal to reach 900 ELO to beat my friend Adrian.</p>
+
 ![image](https://github.com/user-attachments/assets/8079915b-03a2-4e1a-86c2-9205e9e95a7c)
 
 ## Todo List
