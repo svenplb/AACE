@@ -8,5 +8,9 @@
 - [x] valuable pieces
 - [x] board evaluation
 - [x] build first working search tree
-- [ ] move generation with minimax search tree
-- [ ] alpha-beta pruning (optional)(optimizing)
+- [x] move generation with minimax search tree
+- [x] alpha-beta pruning (optional)(optimizing)
+- [ ] settings page
+- [ ] api
+- [ ] proper display
+
