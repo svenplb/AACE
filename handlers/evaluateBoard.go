@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/notnil/chess"
 )
 
-func Evaluate(game *chess.Game) int {
+func Evaluate(position *chess.Position) int {
 
 	var pieceValues = map[chess.PieceType]int{
 		chess.Queen:  900,
@@ -99,30 +97,8 @@ func Evaluate(game *chess.Game) int {
 		king_b_sv[i] = king_w_sv[63-i]
 	}
 
-	outcome := game.Outcome()
-	method := game.Method()
-
-	if outcome != chess.NoOutcome {
-		switch method {
-		case chess.Checkmate:
-			if outcome == chess.WhiteWon {
-				fmt.Println("WHITE WON")
-				return 9999
-			} else if outcome == chess.BlackWon {
-				fmt.Println("BLACK WON")
-				return -9999
-			}
-		// draw
-		case chess.Stalemate:
-			fmt.Println("draw")
-			return 0
-		case chess.Resignation, chess.DrawOffer, chess.ThreefoldRepetition, chess.FivefoldRepetition, chess.SeventyFiveMoveRule:
-			return 0
-		}
-	}
-
 	score := 0
-	board := game.Position().Board()
+	board := position.Board()
 
 	for sq := 0; sq < 64; sq++ {
 		piece := board.Piece(chess.Square(sq))
@@ -164,7 +140,6 @@ func Evaluate(game *chess.Game) int {
 		}
 
 	}
-	fmt.Println("score", score)
 	return score
 
 }

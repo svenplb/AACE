@@ -2,6 +2,8 @@
 <h3 align="center">AACE</h3>
 <p align="center">Anti Adrian Chess Engine, written in Go. Goal to reach 900 ELO to beat my friend Adrian.</p>
 
+
+
 ## Todo List
 - [x] Chessboard representation
 - [x] random moves
@@ -17,3 +19,10 @@
 - [ ] proper openings
 - [ ] move ordering
 
+Ok, I broke my algorithm and now it's loosing against a bot that does random moves. Nice.
+
+Let's start from scratch:
+Definition: Value Network
+
+V - f(board) 
+V = move with highest eval
