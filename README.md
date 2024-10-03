@@ -2,7 +2,6 @@
 <h3 align="center">AACE</h3>
 <p align="center">Anti Adrian Chess Engine, written in Go. Goal to reach 900 ELO to beat my friend Adrian.</p>
 
-<img align="center" src="https://github.com/user-attachments/assets/8079915b-03a2-4e1a-86c2-9205e9e95a7c" height="260" alt="Project Logo">
 
 ## Todo List
 - [x] Chessboard representation
