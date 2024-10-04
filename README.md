@@ -17,5 +17,6 @@ The biggest problem with this version currently are the endgames. The engine doe
 - [x] proper display
 - [x] piece heatmaps
 - [ ] proper endgame
-- [ ] proper openings
-- [ ] move ordering
+- [x] proper openings / piece heatmaps
+- [x] move ordering
+- [ ] opening book

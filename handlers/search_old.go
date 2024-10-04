@@ -8,7 +8,8 @@ import (
 	"github.com/notnil/chess"
 )
 
-func alphaBetaSearch_old(position *chess.Position, game *chess.Game, depth int, alpha int, beta int) (int, *chess.Move) {
+func alphaBetaSearch_old(position *chess.Position, game *chess.Game, depth int, alpha int, beta int, searchCount *int) (int, *chess.Move) {
+	*searchCount++
 	if depth == 0 || position.Status() != chess.NoMethod {
 		return Evaluate_old(position), nil
 	}
@@ -22,7 +23,7 @@ func alphaBetaSearch_old(position *chess.Position, game *chess.Game, depth int, 
 		bestEval := -9999
 		for _, move := range moves {
 			newPosition := position.Update(move)
-			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta)
+			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta, searchCount)
 			if eval > bestEval {
 				bestEval = eval
 				bestMove = move
@@ -39,7 +40,7 @@ func alphaBetaSearch_old(position *chess.Position, game *chess.Game, depth int, 
 		bestEval := 9999
 		for _, move := range moves {
 			newPosition := position.Update(move)
-			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta)
+			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta, searchCount)
 			if eval < bestEval {
 				bestEval = eval
 				bestMove = move
@@ -75,9 +76,10 @@ func Search_old(c *gin.Context) {
 
 	game := chess.NewGame(fen)
 
-	eval, bestMove := alphaBetaSearch_old(game.Position(), game, 3, -9999, 9999)
+	searchCount := 0
+	eval, bestMove := alphaBetaSearch_old(game.Position(), game, 3, -9999, 9999, &searchCount)
 
-	fmt.Println(bestMove)
+	fmt.Printf("Positions searched ( REGULAR ALPHA BETA) %d\n", searchCount)
 
 	if bestMove == nil {
 		c.JSON(http.StatusOK, gin.H{"error": "No valid moves found"})

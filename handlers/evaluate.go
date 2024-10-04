@@ -136,6 +136,7 @@ func Evaluate(position *chess.Position) int {
 				case chess.King:
 					score -= king_b_sv[sq]
 				}
+
 			}
 		}
 
