@@ -8,13 +8,13 @@ import (
 	"github.com/notnil/chess"
 )
 
-func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alpha int, beta int) (int, *chess.Move) {
+func alphaBetaSearch_old(position *chess.Position, game *chess.Game, depth int, alpha int, beta int) (int, *chess.Move) {
 	if depth == 0 || position.Status() != chess.NoMethod {
-		return Evaluate(position), nil
+		return Evaluate_old(position), nil
 	}
 	moves := position.ValidMoves()
 	if len(moves) == 0 {
-		return Evaluate(position), nil
+		return Evaluate_old(position), nil
 	}
 	var bestMove *chess.Move
 
@@ -22,7 +22,7 @@ func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alph
 		bestEval := -9999
 		for _, move := range moves {
 			newPosition := position.Update(move)
-			eval, _ := alphaBetaSearch(newPosition, game, depth-1, alpha, beta)
+			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta)
 			if eval > bestEval {
 				bestEval = eval
 				bestMove = move
@@ -39,7 +39,7 @@ func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alph
 		bestEval := 9999
 		for _, move := range moves {
 			newPosition := position.Update(move)
-			eval, _ := alphaBetaSearch(newPosition, game, depth-1, alpha, beta)
+			eval, _ := alphaBetaSearch_old(newPosition, game, depth-1, alpha, beta)
 			if eval < bestEval {
 				bestEval = eval
 				bestMove = move
@@ -56,7 +56,7 @@ func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alph
 	}
 }
 
-func Search(c *gin.Context) {
+func Search_old(c *gin.Context) {
 
 	var json struct {
 		FEN string `json:"fen"`
@@ -75,7 +75,7 @@ func Search(c *gin.Context) {
 
 	game := chess.NewGame(fen)
 
-	eval, bestMove := alphaBetaSearch(game.Position(), game, 3, -9999, 9999)
+	eval, bestMove := alphaBetaSearch_old(game.Position(), game, 3, -9999, 9999)
 
 	fmt.Println(bestMove)
 

@@ -21,6 +21,7 @@ func SetupRoutes() {
 	// router.POST("/bestMove", handlers.)
 
 	router.POST("/search", handlers.Search)
+	router.POST("/search_old", handlers.Search_old)
 
 	router.Run(":8080")
 
