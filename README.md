@@ -2,7 +2,6 @@
 <h3 align="center">AACE</h3>
 <p align="center">Anti Adrian Chess Engine, written in Go. Goal to reach 900 ELO to beat my friend Adrian.</p>
 
-The biggest problem with this version currently are the endgames. The engine does not know how to kind of force the king to the edge to checkmate.
 
 ## Todo List
 - [x] Chessboard representation
@@ -17,6 +16,7 @@ The biggest problem with this version currently are the endgames. The engine doe
 - [x] proper display
 - [x] piece heatmaps
 - [ ] proper endgame
+- [x] push king to corner
 - [x] proper openings / piece heatmaps
 - [x] move ordering
 - [ ] opening book
