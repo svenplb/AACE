@@ -10,6 +10,7 @@ import (
 )
 
 func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alpha int, beta int, searchCountt *int) (int, *chess.Move) {
+
 	*searchCountt++
 	if depth == 0 || position.Status() != chess.NoMethod {
 		return Evaluate(position), nil
@@ -54,7 +55,7 @@ func alphaBetaSearch(position *chess.Position, game *chess.Game, depth int, alph
 			}
 
 			if beta <= alpha {
-				break // Alpha
+				break
 			}
 		}
 		return bestEval, bestMove
@@ -86,7 +87,7 @@ func orderMoves(validMoves []*chess.Move, position *chess.Position) []*chess.Mov
 		case chess.Pawn:
 			moveScore = 1
 		case chess.King:
-			moveScore = 10 //
+			moveScore = 10
 		}
 
 		if capturePiece != chess.NoPiece {
@@ -136,7 +137,14 @@ func Search(c *gin.Context) {
 
 	searchCountt := 0
 
-	eval, bestMove := alphaBetaSearch(game.Position(), game, 6, -9999, 9999, &searchCountt)
+	// increase search depth for endgame
+
+	//searchDepth := 3
+	//if isEndgame(game) { // Check if the game is in an endgame state
+	//	searchDepth = 5 // Increase the search depth for endgame
+	//}
+
+	eval, bestMove := alphaBetaSearch(game.Position(), game, 3, -9999, 9999, &searchCountt)
 
 	fmt.Printf("Positions searched (MOVE ORDERING): %d\n", searchCountt)
 

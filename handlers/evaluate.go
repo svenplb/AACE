@@ -7,6 +7,7 @@ import (
 func Evaluate(position *chess.Position) int {
 
 	var pieceValues = map[chess.PieceType]int{
+		chess.King:   999999,
 		chess.Queen:  900,
 		chess.Rook:   500,
 		chess.Bishop: 300,
@@ -141,6 +142,75 @@ func Evaluate(position *chess.Position) int {
 		}
 
 	}
+
+	friendlyKingSquare := -1
+	opponentKingSquare := -1
+	for sq := 0; sq < 64; sq++ {
+		piece := board.Piece(chess.Square(sq))
+		if piece.Type() == chess.King {
+			if piece.Color() == chess.White {
+				friendlyKingSquare = sq
+			} else {
+				opponentKingSquare = sq
+			}
+		}
+	}
+	if friendlyKingSquare != -1 && opponentKingSquare != -1 {
+		score += ForceKingToCornerEndgameEval(friendlyKingSquare, opponentKingSquare, 5.5)
+	}
+
 	return score
 
+}
+
+// Helper functions for endgame
+
+func Rank(square int) int {
+	return square / 8
+}
+
+func File(square int) int {
+	return square % 8
+}
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// TODO: Play around with values.
+// eval position of both kings. Try to push opponent king to corner & keep friendly king safe.
+func ForceKingToCornerEndgameEval(friendlyKingSquare int, opponentKingSquare int, endgameWeight float64) int {
+	evaluation := 0
+
+	// row / column opponent king
+	opponentKingRank := Rank(opponentKingSquare)
+	opponentKingFile := File(opponentKingSquare)
+
+	// distance to center row / colum & add up distances
+	opponentKingDstToCentreFile := Max(3-opponentKingFile, opponentKingFile-4)
+	opponentKingDstToCentreRank := Max(3-opponentKingRank, opponentKingRank-4)
+
+	opponentKingDstFromCentre := opponentKingDstToCentreFile + opponentKingDstToCentreRank
+	evaluation += opponentKingDstFromCentre
+
+	friendlyKingRank := Rank(friendlyKingSquare)
+	friendlyKingFile := File(friendlyKingSquare)
+
+	dstBetweenKingsFile := Abs(friendlyKingFile - opponentKingFile)
+	dstBetweenKingsRank := Abs(friendlyKingRank - opponentKingRank)
+
+	dstBetweenKings := dstBetweenKingsFile + dstBetweenKingsRank
+	evaluation += 14 - dstBetweenKings
+
+	return int(float64(evaluation) * 10 * endgameWeight)
 }
